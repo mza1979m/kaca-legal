@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KACA — Email confirmation</title>
+<style>
+  body { font-family: system-ui, sans-serif; background: #f0f9ff; margin: 0;
+         display: flex; min-height: 100vh; align-items: center; justify-content: center; }
+  .card { background: #fff; border-radius: 16px; padding: 40px 32px; max-width: 420px;
+          margin: 16px; text-align: center; box-shadow: 0 4px 24px rgba(2,132,199,.12); }
+  .check { font-size: 56px; }
+  h1 { color: #0f172a; font-size: 24px; margin: 12px 0 8px; }
+  p { color: #475569; line-height: 1.5; }
+  a.btn { display: inline-block; margin-top: 16px; background: #0ea5e9; color: #fff;
+          text-decoration: none; padding: 14px 28px; border-radius: 12px; font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="check" id="icon">✅</div>
+  <h1 id="headline">Email confirmed!</h1>
+  <p id="detail">Your KACA account is ready. Open the KACA app on your phone and sign in.</p>
+  <a class="btn" href="kaca://sign-in" id="open">Open the app</a>
+</div>
+<script>
+  var failed = /(^|[#&?])error(_code|_description)?=/.test(window.location.hash);
+  if (failed) {
+    var code = (window.location.hash.match(/error_code=([^&]*)/) || [])[1] || "";
+    document.getElementById("icon").textContent = "⚠️";
+    document.getElementById("headline").textContent =
+      code === "otp_expired" ? "This link has expired" : "Confirmation failed";
+    document.getElementById("detail").textContent =
+      "Open the KACA app, go to Sign in, and tap \"Resend confirmation email\" to get a fresh link.";
+    document.getElementById("open").style.display = "none";
+  } else if (/Android|iPhone/i.test(navigator.userAgent)) {
+    setTimeout(function () { window.location.href = "kaca://sign-in"; }, 400);
+  }
+</script>
+</body>
+</html>
